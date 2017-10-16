@@ -1,13 +1,7 @@
 #  This module contains tools for getting features from a data file
 
-%reset -f
-
 print('importing CountVectorizer...')
 from sklearn.feature_extraction.text import TfidfVectorizer
-print('importing numpy...')
-import numpy as np
-print('importing pyplot...')
-import matplotlib.pyplot as plt
 print('   imported')
 
 #%% First, let's make a vectorizer:
@@ -73,7 +67,17 @@ def useVectorizerOnHamSpamFile(vectorizer,filename):
     
 if __name__=='__main__':
     print('\ntesting useVectorizer:..')
-    (X, y) = useVectorizerOnHamSpamFile(vec, 'train2.csv')
-    print(X)
+    (X2, y2) = useVectorizerOnHamSpamFile(vec, 'train2.csv')
+    print(X2)
     
     #cool, looks good!
+
+
+#%% Finally, let's save the results:
+import pickle
+
+if __name__=='__main__':
+    output = open('protoFeatures.pkl', 'wb')
+    for data in [vec, X, y, X2, y2]:
+        pickle.dump(data,output)
+    output.close()
