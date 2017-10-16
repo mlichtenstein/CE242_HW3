@@ -34,10 +34,10 @@ def getVectorizerFromHamSpamFile(filename):
     
     return(vectorizer, X, y)
     
-if __name__=='__main__':
-    print('\ntesting getVectorizer:...')
-    (vec, X, y) = getVectorizerFromHamSpamFile('train1.csv')
-    print(vec.get_feature_names())
+
+print('\ntesting getVectorizer:...')
+(vec, X, y) = getVectorizerFromHamSpamFile('train1.csv')
+print(vec.get_feature_names())
     
 #%% Cool, let's see if we can get features from a different dataset this way:
 def useVectorizerOnHamSpamFile(vectorizer,filename):
@@ -65,10 +65,9 @@ def useVectorizerOnHamSpamFile(vectorizer,filename):
     X = vectorizer.transform(corpus)
     return(X,y)
     
-if __name__=='__main__':
-    print('\ntesting useVectorizer:..')
-    (X2, y2) = useVectorizerOnHamSpamFile(vec, 'train2.csv')
-    print(X2)
+print('\ntesting useVectorizer:..')
+(X2, y2) = useVectorizerOnHamSpamFile(vec, 'train2.csv')
+print(X2)
     
     #cool, looks good!
 
