@@ -1,67 +1,79 @@
 #  This module contains tools for getting features from a data file
 
+%reset -f
+
 print('importing CountVectorizer...')
 from sklearn.feature_extraction.text import TfidfVectorizer
+print('importing numpy...')
+import numpy as np
+print('importing pyplot...')
+import matplotlib.pyplot as plt
+print('   imported')
 
-def readHamSpamFile(filename):
-    features = []
-
+#%% First, let's make a vectorizer:
+def getVectorizerFromHamSpamFile(filename):
+    '''Outputs (v, X, y):
+        v = a vectorizer, initialized from hamspam data in filename
+        X = a matrix, each row of which is a feature from original hamspam file
+        y = a vector of booleans, for the ham/spam (spam = 1) labels
+    '''
+    corpus = []
+    y = []
+    vectorizer = TfidfVectorizer()
+    
+    #Read the file, get y and a vector of strings:
     f = open(filename, 'r')
-    print('reading data from ' + filename + '...')
+    print('getVectorizer: reading data from ' + filename + '...')
     for line in f:
         try:
             (hamspam, subjectline) = line.split(',',1)
-            features.append( (
-                hamspam=='ham',
-                subjectline) )
+            corpus.append( subjectline ) 
+            y.append(hamspam=='spam',)
         except Exception as e:
             continue
-            print(line)
-            print(e)
+            print('getVectorizer:  error parsing a line:', line, e)
             input('...')
     f.close()
-    return features
-
-if __name__=='__main__':
-    print('\nbeginning dataToFeatures test...')
-    raw_features = readHamSpamFile('train1.csv')
-    print('got %d features' % (len(raw_features)))
-    print('here are the raw features 1:')
-    print(raw_features)
-
-#okay, that looks good.  Can we tokenize it???
-
-def tokenizeRawFeatures(raw_features, vectorizer = None):
-    '''A function that takes raw features( a list of tuples, (bool, string))
-    and optionally an extant vectorizer.
-    and returns (X, vectorizer)
-    where X is the set of tokenized features
-    and vectorizer is the vectorizer that produced that.'''
-
-    #if no vectorizer is specified, create a new vectorizer:
-    if vectorizer == None:
-        print('creating a new vectorizer...')
-        vectorizer = TfidfVectorizer()
-
-    corpus = [x[1] for x in raw_features]
+    
+    #and now do the vectorizer thing:
     X = vectorizer.fit_transform(corpus)
-    return(X, vectorizer)
-
+    
+    return(vectorizer, X, y)
+    
 if __name__=='__main__':
-    print('training raw features on a new vectorizer:')
-    X,vectorizer = tokenizeRawFeatures(raw_features)
-    print('here is the vectorized corpus 1:')
+    print('\ntesting getVectorizer:...')
+    (vec, X, y) = getVectorizerFromHamSpamFile('train1.csv')
+    print(vec.get_feature_names())
+    
+#%% Cool, let's see if we can get features from a different dataset this way:
+def useVectorizerOnHamSpamFile(vectorizer,filename):
+    '''outputs:  (X, y) 
+    X = matrix of feature vectors 
+    y = vector of booleans for labels
+    '''
+    corpus = []
+    y = []
+    
+    f = open(filename, 'r')
+    print('useVectorizer:  reading data from ' + filename + '...')
+    for line in f:
+        try:
+            (hamspam, subjectline) = line.split(',',1)
+            corpus.append( subjectline ) 
+            y.append(hamspam=='spam',)
+        except Exception as e:
+            continue
+            print('useVectorizer:  error parsing a line:', line, e)
+            input('...')
+    f.close()
+    
+    # get features:
+    X = vectorizer.transform(corpus)
+    return(X,y)
+    
+if __name__=='__main__':
+    print('\ntesting useVectorizer:..')
+    (X, y) = useVectorizerOnHamSpamFile(vec, 'train2.csv')
     print(X)
-    print('here is the vocabulary of the vectorizer:')
-    print(vectorizer.vocabulary_)
-
-
-    #we might also want to run this on a different set of features, so let's see how that looks:
-
-    raw_features2 = readHamSpamFile('train2.csv')
-    X2 = tokenizeRawFeatures(raw_features2,vectorizer)
-
-    print('here are the raw features 2:')
-    print(raw_features)
-    print('here is the vectorized corpus 2:')
-    print(X)
+    
+    #cool, looks good!

@@ -1,10 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Oct 16 09:39:47 2017
 
-#from matplotlib.pyplot import *
-#from numpy import *
+@author: max
+"""
 
-import numpy as np
-
-print("hello world!!!!")
-
-quit()
-
+#%% First cell!
+x = range(1,5)
+print(x)
