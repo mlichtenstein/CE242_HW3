@@ -1,7 +1,7 @@
 #  This module contains tools for getting features from a data file
 
 print('importing CountVectorizer...')
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 def readHamSpamFile(filename):
     features = []
@@ -41,7 +41,7 @@ def tokenizeRawFeatures(raw_features, vectorizer = None):
     #if no vectorizer is specified, create a new vectorizer:
     if vectorizer == None:
         print('creating a new vectorizer...')
-        vectorizer = CountVectorizer()
+        vectorizer = TfidfVectorizer()
 
     corpus = [x[1] for x in raw_features]
     X = vectorizer.fit_transform(corpus)
