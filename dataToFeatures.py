@@ -34,10 +34,11 @@ def getVectorizerFromHamSpamFile(filename):
     
     return(vectorizer, X, y)
     
-
-print('\ntesting getVectorizer:...')
-(vec, X, y) = getVectorizerFromHamSpamFile('train1.csv')
-print(vec.get_feature_names())
+#test it:
+if __name__=="__main__":
+    print('\ntesting getVectorizer:...')
+    (vec, X1, y1) = getVectorizerFromHamSpamFile('train1.csv')
+    print(vec.get_feature_names())
     
 #%% Cool, let's see if we can get features from a different dataset this way:
 def useVectorizerOnHamSpamFile(vectorizer,filename):
@@ -64,19 +65,21 @@ def useVectorizerOnHamSpamFile(vectorizer,filename):
     # get features:
     X = vectorizer.transform(corpus)
     return(X,y)
-    
-print('\ntesting useVectorizer:..')
-(X2, y2) = useVectorizerOnHamSpamFile(vec, 'train2.csv')
-print(X2)
+   
+if __name__=="__main__":
+    print('\ntesting useVectorizer:..')
+    (X2, y2) = useVectorizerOnHamSpamFile(vec, 'train2.csv')
+    print(X2)
     
     #cool, looks good!
 
+#%%
 
-#%% Finally, let's save the results:
-import pickle
-
-if __name__=='__main__':
-    output = open('protoFeatures.pkl', 'wb')
-    for data in [vec, X, y, X2, y2]:
-        pickle.dump(data,output)
-    output.close()
+##%% Finally, let's save the results:
+#import pickle
+#
+#if __name__=='__main__':
+#    output = open('protoFeatures.pkl', 'wb')
+#    for data in [vec, X1, y1, X2, y2]:
+#        pickle.dump(data,output)
+#    output.close()
