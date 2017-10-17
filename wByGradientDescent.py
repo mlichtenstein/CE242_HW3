@@ -4,14 +4,6 @@
 
 
 import dataToFeatures
-#
-#import pickle
-#pklfile = open('protoFeatures.pkl', 'rb')
-#vec = pickle.load(pklfile)
-#X = pickle.load(pklfile)
-#y = pickle.load(pklfile)
-#pklfile.close()
-
 import numpy as np
 import matplotlib as matplotlib
 import matplotlib.pyplot as plt
@@ -31,11 +23,15 @@ if __name__=="__main__":
         for j in range(0,len(y)):
             results[i,j] = sigmoid([x[i],y[j]],[ 1 , .5])
     plt.imshow(results, cmap='hot', interpolation='nearest')
+    plt.title('output of example sigmoid function')
+    plt.xlabel('x')
+    plt.ylabel('y')
     plt.show()
+    
     #excellent!
     
 #%% Let's try doing a gradient descent!
-def doGradientDescent(X,y, lamb = 0, nu = .1, alpha = 0, iters = 100, w_0 = None)
+def doGradientDescent(X,y, lamb = 0, nu = .1, alpha = 0, iters = 100, w_0 = None):
     '''does a gradient descent for a given feature list 
     Inputs:
         X,y = feature list
@@ -51,27 +47,35 @@ def doGradientDescent(X,y, lamb = 0, nu = .1, alpha = 0, iters = 100, w_0 = None
         err = all errors
     '''
     if w_0 == None:
-        w_0 = np.zeros(1, X.shape[1])
+        w_0 = np.zeros( [1, X.shape[1]] )
     # y is defined as true or false, but let's convert it to +/- 1
-    y = [(1 if y_i else -1) for y_i in y]
+    #y = [(1 if y_i else -1) for y_i in y] # I think we shouldn't???
     
-    def err(w,X,y):
+    def errorAtW(w_in):
         err = 0
-        for i in range(0:len(y)):
-            err += y[i]*
+        for i in range(0,len(y)):
+            x_i =  X.getrow(i).toarray().tolist()[0]
+            #w_in = w_in.tolist()[0]
+            err += (y[i]*np.log(sigmoid(w_in,x_i)) 
+                    + (1-y[i])*np.log(1-sigmoid(w_in,x_i)))
+        return err
     
     #now iterate:
     w = [w_0]
-    for t = range(0,iters):
+    err = [errorAtW(w_0)]
+    for t in range(0,iters):
         dGdw = 2*lamb*w
-        w_t = w[-1,:]
-        for i = range(0,len(y)):
-            label_i = 1 if y(i) else -1
-            x_i = X.getrow(i).toarray()
-            dGdw += -(label_i - sigmoid(x_i,w_t))
-        w_t += nu * t**(-a) * dGdw
+        w_t = w[-1].tolist()[0]
+        for i in range(0,len(y)):
+            x_i = X.getrow(i).toarray().tolist()[0]
+            dGdw += -(y[i] - sigmoid(w_t,x_i))
+        w_t += nu * t**(-alpha) * dGdw
         
-        err
+        err.append(errorAtW(w_t))
         w.append(w_t)
     return
     
+if __name__=="__main__":
+    (vec, X, y) = dataToFeatures.getVectorizerFromHamSpamFile('train1.csv')
+    
+    doGradientDescent(X,y)
