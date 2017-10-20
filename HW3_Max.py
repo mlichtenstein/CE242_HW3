@@ -6,9 +6,9 @@ import numpy as np
 
 # In[3509]:
 #some basic configuration stuff:
-Quick_Run_Flag = True;  #do a quick run for testing???
+Quick_Run_Flag = False;  #do a quick run for testing???
 Quick_Run_n = 1000;          #on a quick run, how many samples?        
-Feature_len = 1000; #desired feature length
+Feature_len = 200; #desired feature length
 
 # In[3510]:
 # Import data:
@@ -54,6 +54,7 @@ print('X has shape',X_full.shape)
 #we also do an SVD transform to do some dimesionality reduction:
 import matplotlib.pyplot as plt
 
+print("taking SVD transform....")
 (u,s,v) = np.linalg.svd(X_full,    full_matrices= False)
 
 #transform X into an information-rich space by taking u*s, 
