@@ -1,14 +1,19 @@
 
 # coding: utf-8
+from IPython import get_ipython
+ipython = get_ipython()
+ipython.magic('clear')
+#ipython.magic('reset -f')
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 import numpy as np
+
 
 # In[3509]:
 #some basic configuration stuff:
 Quick_Run_Flag = True;  #do a quick run for testing???
 Quick_Run_n = 1000;          #on a quick run, how many samples?        
-Feature_len = 1000; #desired feature length
+Feature_len = 100; #desired feature length
 
 # In[3510]:
 # Import data:
@@ -73,7 +78,9 @@ print('reduced X has shape',X.shape)
 #%%
 # Define and test our sigmoid function:
 def sigmoid(w_,x):
-    return float(1 / (1 + np.exp(-(np.transpose(w_).dot(x)))))
+#    return float(1 / (1 + np.exp(-(np.transpose(w_).dot(x)))))
+    x_ = np.transpose(w_).dot(x)
+    return float( x_/ (1 + abs(x_))/2+1/2 )
 
 #%%
 # let's test it:
@@ -131,7 +138,7 @@ ax2.imshow(results_1, cmap='hot', interpolation='nearest',
 ax2.set_title('lambda = 1')
 
 for ax in (ax1,ax2):
-    ax.text(1,1,'+1', bbox={'boxstyle':'circle', 'facecolor':'white',  'pad':.5})
+    ax.text(1,1,'1', bbox={'boxstyle':'circle', 'facecolor':'white',  'pad':.5})
     ax.text(-1,-1,'0', bbox={'boxstyle':'circle', 'facecolor':'white', 'pad':.5})
     ax.set_xlabel('w0')
     ax.set_ylabel('w1')
@@ -150,6 +157,7 @@ def partial_der(w_,X,t, lmbda):
             J += (y - t[i])*row[j]
         if not j == 0:
             reg = lmbda * w_[j]
+#            reg = lmbda * np.linalg.norm(w_) #not correct!
         else:
             reg = np.array([0])
         partials.append(J + reg)
@@ -189,6 +197,9 @@ for ax in (ax1,ax2):
     ax.set_xlabel('w0')
     ax.set_ylabel('w1')
 f.show()
+
+
+#raise SystemError(0)
 
 #%%
 # Now we write a gradient descent function:
