@@ -2,6 +2,11 @@
 
 #  This module contains tools for getting features from a data file
 
+# first some ipython nonsense
+if __IPYTHON__:
+    from IPython import get_ipython
+    get_ipython().magic('reset -f')
+    get_ipython().magic('load_ext autoreload')
 
 import dataToFeatures
 import numpy as np
@@ -10,9 +15,11 @@ import matplotlib.pyplot as plt
 matplotlib.interactive(True)
 #%% ok let's make a sigmoid function:
 
-def sigmoid(w,x):
+def sigmoid(w_vec,x_vec):
     '''takes a feature vector and a weight vector and computes their sigmoid activation'''
-    return 1/(1 + np.exp(- np.dot(w,x)))
+    assert(w_vec.shape[1] == 1 and x_vec.shape[0] == 1)
+    s= 1/(1 + np.exp(- w_vec*x_vec.transpose()))
+    assert(s)
 
 #test it out!
 if __name__=="__main__":
@@ -21,7 +28,9 @@ if __name__=="__main__":
     results = np.zeros([100,100])
     for i in range(0,len(x)):
         for j in range(0,len(y)):
-            results[i,j] = sigmoid([x[i],y[j]],[ 1 , .5])
+            results[i,j] = sigmoid(
+                    np.array([[ x[i]], [ y[j] ]]),
+                    np.array([[ 1   , .5]]))
     plt.imshow(results, cmap='hot', interpolation='nearest')
     plt.title('output of example sigmoid function')
     plt.xlabel('x')
