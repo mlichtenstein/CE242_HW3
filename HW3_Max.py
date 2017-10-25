@@ -13,11 +13,7 @@ import numpy as np
 #some basic configuration stuff:
 Quick_Run_Flag = False;  #do a quick run for testing???
 Quick_Run_n = 1000;          #on a quick run, how many samples?        
-<<<<<<< HEAD
-Feature_len = 200; #desired feature length
-=======
 Feature_len = 100; #desired feature length
->>>>>>> 8c83ed9fdcb013f8f60ac4d7a08eaf56bbee4d13
 
 # In[3510]:
 # Import data:
@@ -51,10 +47,12 @@ print('\nThere are',len(target),'labels, of which',sum(target),'are spam')
 # Tokenize and transform subject line strings from raw data:
 
 vectorizer = TfidfVectorizer(
-    ngram_range = (1,2),
-#    max_features= 700, 
+    ngram_range = (2,2),
+#    max_features= 10, 
     stop_words = "english")
 X_full  = vectorizer.fit_transform(X_strings).toarray()
+
+print('Here are some of the tokens:', vectorizer.get_feature_names()[0:10])
 
 print('X has shape',X_full.shape)
 
@@ -73,12 +71,26 @@ print("taking SVD transform....")
 X_unbiased = u[:,0:Feature_len].dot(np.diag(s[0:Feature_len]))
 X = np.append(np.ones([len(X_unbiased),1]), X_unbiased, axis = 1)
 
+#%%
+plt.figure()
 plt.plot(s)
 plt.plot([Feature_len, Feature_len],[0, max(s)] )
 plt.legend('singular values of X', 'feature cutoff')
 plt.show()
 
 print('reduced X has shape',X.shape)
+
+#%%
+
+#How diagonalish are u and v?
+plt.figure()
+plt.subplot(121)
+plt.imshow(u[0:300,0:300])
+plt.subplot(122)
+plt.imshow(v[0:300,0:300])
+plt.show()
+
+raise SystemError(0)
 
 #%%
 # Define and test our sigmoid function:
